@@ -5,7 +5,7 @@ import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity 
 
 const {height, width} = Dimensions.get('window');
 
-export const loginScreen = ({navigation}) => {
+export const LoginScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.panel}>
