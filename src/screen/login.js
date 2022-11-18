@@ -21,10 +21,9 @@ export const LoginScreen = ({navigation}) => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         setUserWithFirebaseAndRol(user);
-        if(userinfo != null && user !=""){
+        if(userinfo !=""){
           if(userinfo.rol == "Admin"){
             navigation.replace("DashboardAdmin")
-
           }else{
             navigation.replace("DashboardU")
           }
@@ -35,7 +34,6 @@ export const LoginScreen = ({navigation}) => {
     return unsubscribe
   }, [])
 
-  
   const onLogin = async() =>{
     if(newUser.correo == ""){
       alert("Debe ingresar el correo del usuario");
