@@ -1,23 +1,54 @@
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView } from 'react-native';
+import { database } from '../config/fb';
+import { getFirestore,collection, setDoc,doc  } from 'firebase/firestore';
+import {getAuth,createUserWithEmailAndPassword } from "firebase/auth";
+const auth = getAuth(database);
+
 
 export const Newregister = () =>{
+
+  const firestore = getFirestore(database);
+  const modelo = {nombres:'',  apellidos:'',  correo:'',  contrasena:'',  tipoUsuario: 'User',  fechaCreacion: new Date()}
+  const [newUser,setNewUser] = React.useState(modelo)
+
+  const onSend = async() =>{
+    if(newUser.nombres ==""){
+      alert("Debe ingresar el nombre del usuario");
+    }else if(newUser.apellidos == ""){
+      alert("Debe ingresar el apellido del usuario");
+    }else if(newUser.correo == ""){
+      alert("Debe ingresar el correo del usuario");
+    }else if(newUser.contrasena == ""){
+      alert("Debe ingresar la contraseña");
+    }else{
+      const infoUsuario = await createUserWithEmailAndPassword(auth,newUser.correo,newUser.contrasena).then((usuarioFirebase) => {
+        return usuarioFirebase;
+      }).catch(error => alert("Ya existe un usuario registrado con el mismo correo"))
+
+      const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
+      setDoc(docuRef, { newUser });
+      alert("El usuario ha sido creado exitosamente");
+    }  
+  }
+
     return (
         <ScrollView>
         <View style={styles.container}>
         <Text style={styles.titulo}>INFORMACIÓN</Text>
         <Image style={styles.foto} source={require('../../assets/user_register.png')}></Image>
-        <TextInput style={styles.textInput} placeholder='Nombres'></TextInput>
-        <TextInput style={styles.textInput} placeholder='Apellidos'></TextInput>
-        <TextInput style={styles.textInput} placeholder='Correo Electronico'></TextInput>
-        <TextInput style={styles.textInput} placeholder='Username'></TextInput>
-        <TextInput style={styles.textInput} secureTextEntry={true} placeholder='Contraseña'></TextInput>
-        <TouchableOpacity style={styles.button}><Text style={styles.textButton}>REGISTRARSE</Text></TouchableOpacity>
+        <TextInput onChangeText={(text) => setNewUser({...newUser, nombres:text})} style={styles.textInput} placeholder='Nombres'></TextInput>
+        <TextInput onChangeText={(text) => setNewUser({...newUser, apellidos:text})} style={styles.textInput} placeholder='Apellidos'></TextInput>
+        <TextInput onChangeText={(text) => setNewUser({...newUser, correo:text})} style={styles.textInput} placeholder='Correo Electronico'></TextInput>
+        <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true} placeholder='Contraseña'></TextInput>
+        <TouchableOpacity onPress={onSend} style={styles.button}><Text style={styles.textButton}>REGISTRARSE</Text></TouchableOpacity>
         </View>
         </ScrollView>
         
     );
 }
+
+
 
 const styles = StyleSheet.create({
     container: {

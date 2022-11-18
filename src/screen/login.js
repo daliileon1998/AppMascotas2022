@@ -1,11 +1,45 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
 import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
+import { database } from '../config/fb';
+import { useNavigation } from '@react-navigation/core'
+import {getAuth,signInWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth(database);
 
 const {height, width} = Dimensions.get('window');
 
 export const LoginScreen = ({navigation}) => {
+
+  const modelo = {correo:'',  contrasena:''}
+  const [newUser,setNewUser] = React.useState(modelo);
+  const nav = useNavigation()
+
+  React.useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      console.log(user);
+      if (user) {
+        nav.replace("DashboardAdmin")
+      }
+    })
+
+    return unsubscribe
+  }, [])
+
+  const onLogin = async() =>{
+
+    if(newUser.correo == ""){
+      alert("Debe ingresar el correo del usuario");
+    }else if(newUser.contrasena == ""){
+      alert("Debe ingresar la contraseña");
+    }else{
+      signInWithEmailAndPassword(auth, newUser.correo,newUser.contrasena).
+      then( userCredentials => {
+        const user = userCredentials.user;
+      }).catch(error => alert(error.message))
+    }  
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.panel}>
@@ -14,10 +48,10 @@ export const LoginScreen = ({navigation}) => {
       </View>
       <Text style={styles.titulo}>App Mascotas</Text>
       <Text style={styles.subTitulo}>Inicia Sesión en tu Cuenta</Text>
-      <TextInput style={styles.textInput} placeholder='nombre de usuario'></TextInput>
-      <TextInput style={styles.textInput} secureTextEntry={true}  placeholder='Contraseña'></TextInput>
+      <TextInput onChangeText={(text) => setNewUser({...newUser, correo:text})} style={styles.textInput} placeholder='nombre de usuario'></TextInput>
+      <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true}  placeholder='Contraseña'></TextInput>
       <Text style={styles.forgotPassword} >¿Perdiste Tu Contraseña?</Text>
-      <TouchableOpacity style={styles.button}><Text style={styles.textButton}>INICIAR SESIÓN</Text></TouchableOpacity>
+      <TouchableOpacity onPress={onLogin} style={styles.button}><Text style={styles.textButton}>INICIAR SESIÓN</Text></TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Registro')}><Text style={styles.forgotPassword}>¿No Tienes Una Cuenta? Registrate</Text></TouchableOpacity>
       <StatusBar style="auto" />
     </View>

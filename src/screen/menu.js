@@ -8,11 +8,50 @@ import { Mascotas } from "../screen/mascotas";
 import { Productos } from "../screen/productos";
 import { SolicitudesAdopcion } from "../screen/solicitudesAdopcion";
 import { MenuBotton } from '../components/MenuBotton';
+import { database } from '../config/fb';
+import {getAuth } from "firebase/auth";
+import { useNavigation } from '@react-navigation/core'
 
-
+const auth = getAuth(database);
 const Menu = createDrawerNavigator();
 
+
 export const Dashboard = () =>{
+
+  const navigation = useNavigation()
+
+  const imagesList = {
+    home: require('../../assets/home.png'),
+    pets: require('../../assets/pets.png'),
+    productos: require('../../assets/productos.png'),
+    solicitud: require('../../assets/solicitud.png'),
+    logout: require('../../assets/logout.png')
+  }
+
+  const handleSignOut = () => {
+    auth.signOut()
+      .then(() => {
+        navigation.replace("Home")
+      })
+      .catch(error => alert(error.message))
+  }
+
+  const MenuItems = ({ navigation }) => {
+
+    return (
+      <DrawerContentScrollView style ={styles.container}>
+        <Image style={styles.foto} source={require('../../assets/user_register.png')}></Image>
+        <Text style={styles.nombre}>nombre user</Text>
+          <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('Inicio')}/>
+          <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>
+          <MenuBotton image={imagesList['productos']} text="Productos" onPress = { () => navigation.navigate('Productos')}/>
+          <MenuBotton image={imagesList['solicitud']} text="Solicitudes de Adopción" onPress = { () => navigation.navigate('Solicitudes')}/>
+          <MenuBotton image={imagesList['logout']} text="Cerrar Sesión" onPress = {handleSignOut}/>
+      </DrawerContentScrollView>
+    );
+
+  }
+
     return (
       
       <NavigationContainer independent={true}>
@@ -30,28 +69,6 @@ export const Dashboard = () =>{
         </Menu.Navigator>
       </NavigationContainer>
     );
-  }
-
-  const imagesList = {
-    home: require('../../assets/home.png'),
-    pets: require('../../assets/pets.png'),
-    productos: require('../../assets/productos.png'),
-    solicitud: require('../../assets/solicitud.png')
-  }
-
-  const MenuItems = ({ navigation }) => {
-
-    return (
-      <DrawerContentScrollView style ={styles.container}>
-        <Image style={styles.foto} source={require('../../assets/user_register.png')}></Image>
-        <Text style={styles.nombre}>nombre user</Text>
-          <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('Inicio')}/>
-          <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>
-          <MenuBotton image={imagesList['productos']} text="Productos" onPress = { () => navigation.navigate('Productos')}/>
-          <MenuBotton image={imagesList['solicitud']} text="Solicitudes de Adopción" onPress = { () => navigation.navigate('Solicitudes')}/>
-      </DrawerContentScrollView>
-    );
-
   }
 
   const styles = StyleSheet.create({

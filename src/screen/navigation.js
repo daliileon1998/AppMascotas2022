@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { LoginScreen } from './src/screen/login';
-import { Newregister } from './src/screen/register';
-import { Dashboard } from './src/screen/menu';
+import { LoginScreen } from './login';
+import { Newregister } from './register';
+import { Dashboard } from './menu';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
-export default function navigation(){
+export default function Navigation(){
+  const [user, setUser] = React.useState(null);
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator initialRouteName="Home">
