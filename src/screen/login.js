@@ -4,30 +4,39 @@ import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity 
 import { database } from '../config/fb';
 import { useNavigation } from '@react-navigation/core'
 import {getAuth,signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const auth = getAuth(database);
-
+const firestore = getFirestore(database);
 const {height, width} = Dimensions.get('window');
 
 export const LoginScreen = ({navigation}) => {
 
   const modelo = {correo:'',  contrasena:''}
   const [newUser,setNewUser] = React.useState(modelo);
+  const [userinfo, setUser] = React.useState('');
   const nav = useNavigation()
 
   React.useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      console.log(user);
       if (user) {
-        nav.replace("DashboardAdmin")
+        setUserWithFirebaseAndRol(user);
+        if(userinfo != null && user !=""){
+          if(userinfo.rol == "Admin"){
+            navigation.replace("DashboardAdmin")
+
+          }else{
+            navigation.replace("DashboardU")
+          }
+        }
+        //navigation.replace("DashboardAdmin")
       }
     })
-
     return unsubscribe
   }, [])
 
+  
   const onLogin = async() =>{
-
     if(newUser.correo == ""){
       alert("Debe ingresar el correo del usuario");
     }else if(newUser.contrasena == ""){
@@ -38,6 +47,24 @@ export const LoginScreen = ({navigation}) => {
         const user = userCredentials.user;
       }).catch(error => alert(error.message))
     }  
+  }
+
+  function setUserWithFirebaseAndRol(usuarioFirebase) {
+    getRol(usuarioFirebase.uid).then((rol) => {
+      const userData = {
+        uid: usuarioFirebase.uid,
+        email: usuarioFirebase.email,
+        rol: rol,
+      };
+      setUser(userData);
+    });
+  }
+
+  async function getRol(uid) {
+    const docuRef = doc(firestore, `usuarios/${uid}`);
+    const docuCifrada = await getDoc(docuRef);
+    const infoFinal = docuCifrada.data().newUser.tipoUsuario;
+    return infoFinal;
   }
 
   return (

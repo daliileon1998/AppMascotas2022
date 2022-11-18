@@ -2,13 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, Image } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import { DashboardAdmin } from "../screen/dashboardAdmin";
-import { Mascotas } from "../screen/mascotas";
-import { Productos } from "../screen/productos";
-import { SolicitudesAdopcion } from "../screen/solicitudesAdopcion";
+import { DashboardAdmin } from "./dashboardAdmin";
+import { Mascotas } from "./mascotas";
+import { Productos } from "./productos";
+import { SolicitudesAdopcion } from "./solicitudesAdopcion";
 import { MenuBotton } from '../components/MenuBotton';
 import { database } from '../config/fb';
-import {getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core';
 import "react-native-gesture-handler";
 
@@ -16,7 +16,7 @@ const auth = getAuth(database);
 const Menu = createDrawerNavigator();
 
 
-export const Dashboard = () =>{
+export const DashboardUser = () =>{
 
   const navigation = useNavigation()
 
@@ -41,7 +41,7 @@ export const Dashboard = () =>{
     return (
       <DrawerContentScrollView style ={styles.container}>
         <Image style={styles.foto} source={require('../../assets/user_register.png')}></Image>
-        <Text style={styles.nombre}>nombre user</Text>
+        <Text style={styles.nombre}>nombre usario</Text>
           <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('Inicio')}/>
           <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>
           <MenuBotton image={imagesList['productos']} text="Productos" onPress = { () => navigation.navigate('Productos')}/>
@@ -61,7 +61,7 @@ export const Dashboard = () =>{
           options={{
             headerTitle: "",
           }}
-          component={DashboardAdmin}
+          component={DashboardUser}
         />
          <Menu.Screen name="Mascotas" component={Mascotas} />
          <Menu.Screen name="Productos" component={Productos} />

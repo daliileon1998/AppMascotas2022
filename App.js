@@ -2,6 +2,7 @@ import * as React from 'react';
 import { LoginScreen } from './src/screen/login';
 import { Newregister } from './src/screen/register';
 import { Dashboard } from './src/screen/menu';
+import { DashboardUser } from './src/screen/menuUser';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
@@ -15,6 +16,7 @@ export default function navigation(){
         <Stack.Screen  name="Home" component={LoginScreen} options={{ headerShown: false, title: '' }} />
         <Stack.Screen name="Registro" component={Newregister} />
         <Stack.Screen name="DashboardAdmin" component={Dashboard} />
+        <Stack.Screen name="DashboardU" component={DashboardUser} />
       </Stack.Navigator>
     </NavigationContainer>
   );
