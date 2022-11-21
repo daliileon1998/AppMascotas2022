@@ -1,16 +1,12 @@
 import * as React from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView } from 'react-native';
-import { database } from '../config/fb';
-import { getFirestore,collection, setDoc,doc  } from 'firebase/firestore';
-import {getAuth,createUserWithEmailAndPassword } from "firebase/auth";
-const auth = getAuth(database);
-
+import { addCollectionUser, getCollection,createUser } from '../config/actions';
 
 export const Newregister = () =>{
 
-  const firestore = getFirestore(database);
   const modelo = {nombres:'',  apellidos:'',  correo:'',  contrasena:'',  tipoUsuario: 'User',  fechaCreacion: new Date()}
   const [newUser,setNewUser] = React.useState(modelo)
+
 
   const onSend = async() =>{
     if(newUser.nombres ==""){
@@ -22,13 +18,19 @@ export const Newregister = () =>{
     }else if(newUser.contrasena == ""){
       alert("Debe ingresar la contraseña");
     }else{
-      const infoUsuario = await createUserWithEmailAndPassword(auth,newUser.correo,newUser.contrasena).then((usuarioFirebase) => {
-        return usuarioFirebase;
-      }).catch(error => alert("Ya existe un usuario registrado con el mismo correo"))
 
-      const docuRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`);
-      setDoc(docuRef, { newUser });
-      alert("El usuario ha sido creado exitosamente");
+      const result = await createUser(newUser)
+      if(!result.statusResponse){
+        alert("El usuario no se ha podido crear");
+      }else{
+        console.log(result.data);
+        const result2 = await addCollectionUser(newUser,result.data.id)
+        if(!result2.statusResponse){
+          alert("error");
+        }else{
+          alert("El usuario ha sido creado exitosamente");
+        }
+      }
     }  
   }
 
@@ -47,8 +49,6 @@ export const Newregister = () =>{
         
     );
 }
-
-
 
 const styles = StyleSheet.create({
     container: {

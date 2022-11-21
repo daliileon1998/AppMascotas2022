@@ -2,17 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, Image } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import { DashboardAdmin } from "./dashboardAdmin";
-import { Mascotas } from "./mascotas";
-import { Productos } from "./productos";
-import { SolicitudesAdopcion } from "./solicitudesAdopcion";
-import { MenuBotton } from '../components/MenuBotton';
-import { database } from '../config/fb';
-import { getAuth } from "firebase/auth";
+import { DashboardAdmin } from "../admin/dashboardAdmin";
+import { Mascotas } from "../admin/mascotas/mascotas";
+import { Productos } from '../admin//productos/productos';
+import { SolicitudesAdopcion } from "../admin/solicitudes/solicitudesAdopcion";
+import { MenuBotton } from '../../components/MenuBotton';
+import { firebase } from '../../config/fb';
 import { useNavigation } from '@react-navigation/core';
 import "react-native-gesture-handler";
 
-const auth = getAuth(database);
 const Menu = createDrawerNavigator();
 
 
@@ -21,15 +19,15 @@ export const DashboardUser = () =>{
   const navigation = useNavigation()
 
   const imagesList = {
-    home: require('../../assets/home.png'),
-    pets: require('../../assets/pets.png'),
-    productos: require('../../assets/productos.png'),
-    solicitud: require('../../assets/solicitud.png'),
-    logout: require('../../assets/logout.png')
+    home: require('../../../assets/home.png'),
+    pets: require('../../../assets/pets.png'),
+    productos: require('../../../assets/productos.png'),
+    solicitud: require('../../../assets/solicitud.png'),
+    logout: require('../../../assets/logout.png')
   }
 
   const handleSignOut = () => {
-    auth.signOut()
+    firebase.auth().signOut()
       .then(() => {
         navigation.replace("Home")
       })
@@ -40,7 +38,7 @@ export const DashboardUser = () =>{
 
     return (
       <DrawerContentScrollView style ={styles.container}>
-        <Image style={styles.foto} source={require('../../assets/user_register.png')}></Image>
+        <Image style={styles.foto} source={require('../../../assets/user_register.png')}></Image>
         <Text style={styles.nombre}>nombre usario</Text>
           <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('Inicio')}/>
           <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>

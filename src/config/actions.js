@@ -1,0 +1,100 @@
+import { firebase } from './fb'
+
+const db = firebase.firestore();
+
+export const isUserLogged = () =>{
+    let isLogged = false
+    firebase.auth().onAuthStateChanged((user) =>{
+        user !== null && (isLogged =true)
+    })
+}
+
+export const getCollection = async(tabla)=>{
+    const result = {statusResponse : false, data: null, error:null}
+    try {
+        const data = await db.collection(tabla).get() 
+        const arrayData = data.docs.map(doc => ({id:doc.id, ...doc.data()}))
+        result.statusResponse=true
+        result.data=arrayData
+    } catch (error) {
+        result.error = error;
+    }
+    return result;
+}
+
+export const addCollectionUser = async(data, id)=>{
+    //console.log(id,data);
+    const result = {statusResponse : false, data: null, error:null}
+    try {
+        const response = await db.collection(`usuarios/${id}`,data);
+        result.statusResponse=true
+        result.data= {id : response.id}
+    } catch (error) {
+        result.error = error;
+    }
+    return result;
+}
+
+export const createUser = async(data) =>{
+    const result = {statusResponse : false, data: null, error:null}
+    try {
+        const response = await firebase.auth().createUserWithEmailAndPassword(firebase.auth(),data.correo,data.contrasena)
+        result.statusResponse=true
+        result.data= {id : response.user.uid}
+    } catch (error) {
+        result.error = error;
+    }
+    return result;
+}
+
+export const addDocument = async(tabla,data) =>{
+    const result = {statusResponse : true, data: null, error:null}
+    try {
+        await db.collection(tabla).add(data);
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+export const getDocuments = async(tabla,limit) =>{
+    const result = {statusResponse : true, error:null, data: [], startdata:null}
+    try {
+        const response = await db.collection(tabla).orderBy("nombre",'asc').limit(limit).get();
+        if(response.docs.length>0){
+            result.startdata = response.docs[response.docs.length - 1]
+        }
+        response.forEach((doc) =>{
+            const info = doc.data()
+            info.id = doc.id
+            result.data.push(info)
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+
+export const uploadImage = async(image,path,name) => {
+    const result = {statusResponse : false, url: null, error:null}
+    const ref = firebase.storage().ref(path).child(name)
+    const blob = await fileToBlob(image)
+    try {
+        await ref.put(blob)
+        const url = await firebase.storage().ref(`${path}/${name}`).getDownloadURL()
+        result.statusResponse=true
+        result.url = url
+    } catch (error) {
+        result.error = error;
+    }
+    return result;
+}
+
+export const fileToBlob = async(path) =>{
+    const file = await fetch(path)
+    const blob = await file.blob()
+    return blob;
+}

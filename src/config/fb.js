@@ -1,5 +1,8 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from 'firebase/firestore';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/storage";
+
 import Constants from "expo-constants";
 
 const firebaseConfig = {
@@ -11,6 +14,8 @@ const firebaseConfig = {
   appId: Constants.manifest.extra.appId
 };
 
-initializeApp(firebaseConfig);
-export const database = initializeApp(firebaseConfig);
-//export const database = getFirestore();
+if(!firebase.apps.length){
+  firebase.initializeApp(firebaseConfig);
+}
+
+export { firebase }

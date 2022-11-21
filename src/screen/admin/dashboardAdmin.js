@@ -6,7 +6,6 @@ export const DashboardAdmin = () =>{
         <ScrollView>
         <View style={styles.container}>
         <Text style={styles.titulo}>DASHBOARD ADMIN</Text>
-    
         </View>
         </ScrollView>
         

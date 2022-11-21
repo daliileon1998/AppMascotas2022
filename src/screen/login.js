@@ -1,13 +1,9 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
-import { database } from '../config/fb';
+import { firebase } from '../config/fb';
 import { useNavigation } from '@react-navigation/core'
-import {getAuth,signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-const auth = getAuth(database);
-const firestore = getFirestore(database);
 const {height, width} = Dimensions.get('window');
 
 export const LoginScreen = ({navigation}) => {
@@ -15,21 +11,21 @@ export const LoginScreen = ({navigation}) => {
   const modelo = {correo:'',  contrasena:''}
   const [newUser,setNewUser] = React.useState(modelo);
   const [userinfo, setUser] = React.useState('');
-  const nav = useNavigation()
 
   React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        setUserWithFirebaseAndRol(user);
+        navigation.replace("DashboardAdmin");
+      }
+        /*setUserWithFirebaseAndRol(user);
         if(userinfo !=""){
-          if(userinfo.rol == "Admin"){
+          /*if(userinfo.rol == "Admin"){
             navigation.replace("DashboardAdmin")
           }else{
             navigation.replace("DashboardU")
           }
         }
-        //navigation.replace("DashboardAdmin")
-      }
+      }*/
     })
     return unsubscribe
   }, [])
@@ -40,14 +36,14 @@ export const LoginScreen = ({navigation}) => {
     }else if(newUser.contrasena == ""){
       alert("Debe ingresar la contraseña");
     }else{
-      signInWithEmailAndPassword(auth, newUser.correo,newUser.contrasena).
+      firebase.auth().signInWithEmailAndPassword(newUser.correo,newUser.contrasena).
       then( userCredentials => {
         const user = userCredentials.user;
       }).catch(error => alert(error.message))
     }  
   }
 
-  function setUserWithFirebaseAndRol(usuarioFirebase) {
+  /*function setUserWithFirebaseAndRol(usuarioFirebase) {
     getRol(usuarioFirebase.uid).then((rol) => {
       const userData = {
         uid: usuarioFirebase.uid,
@@ -56,14 +52,14 @@ export const LoginScreen = ({navigation}) => {
       };
       setUser(userData);
     });
-  }
+  }*/
 
-  async function getRol(uid) {
-    const docuRef = doc(firestore, `usuarios/${uid}`);
+ /* async function getRol(uid) {
+    const docuRef = doc(firebase, `usuarios/${uid}`);
     const docuCifrada = await getDoc(docuRef);
     const infoFinal = docuCifrada.data().newUser.tipoUsuario;
     return infoFinal;
-  }
+  }*/
 
   return (
     <View style={styles.container}>

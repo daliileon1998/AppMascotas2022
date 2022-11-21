@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { LoginScreen } from './login';
 import { Newregister } from './register';
-import { Dashboard } from './menu';
-import { DashboardUser } from './menuUser';
+import { Dashboard } from './admin/menuAdmin';
+import { DashboardUser } from './user/dashboardUser';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
