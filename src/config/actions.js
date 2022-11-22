@@ -2,11 +2,22 @@ import { firebase } from './fb'
 
 const db = firebase.firestore();
 
-export const isUserLogged = () =>{
-    let isLogged = false
-    firebase.auth().onAuthStateChanged((user) =>{
-        user !== null && (isLogged =true)
+export const isUserLogged = async() =>{
+    const result = {statusResponse : false,isLogged: false, rol:null}
+    firebase.auth().onAuthStateChanged(async(user) =>{
+        if(user !== null){
+            result.statusResponse=true
+            result.rol = await getRol(user.uid)
+            result.isLogged = true
+        }
     })
+    return result;
+}
+
+export const getRol = async (id) =>{
+    const response = await db.collection("usuarios/").doc(id).get()
+    //console.log("response --------->", response);
+    return response.data().tipoUsuario;
 }
 
 export const getCollection = async(tabla)=>{
@@ -23,12 +34,11 @@ export const getCollection = async(tabla)=>{
 }
 
 export const addCollectionUser = async(data, id)=>{
-    //console.log(id,data);
     const result = {statusResponse : false, data: null, error:null}
     try {
-        const response = await db.collection(`usuarios/${id}`,data);
+        const response = await db.collection("usuarios").doc(id).set(data);
         result.statusResponse=true
-        result.data= {id : response.id}
+        result.data= response
     } catch (error) {
         result.error = error;
     }
@@ -38,7 +48,7 @@ export const addCollectionUser = async(data, id)=>{
 export const createUser = async(data) =>{
     const result = {statusResponse : false, data: null, error:null}
     try {
-        const response = await firebase.auth().createUserWithEmailAndPassword(firebase.auth(),data.correo,data.contrasena)
+        const response = await firebase.auth().createUserWithEmailAndPassword(data.correo,data.contrasena)
         result.statusResponse=true
         result.data= {id : response.user.uid}
     } catch (error) {
@@ -61,7 +71,12 @@ export const addDocument = async(tabla,data) =>{
 export const getDocuments = async(tabla,limit) =>{
     const result = {statusResponse : true, error:null, data: [], startdata:null}
     try {
-        const response = await db.collection(tabla).orderBy("nombre",'asc').limit(limit).get();
+        const response = await db
+        .collection(tabla)
+        .orderBy("nombre",'asc')
+        .limit(limit)
+        .get();
+
         if(response.docs.length>0){
             result.startdata = response.docs[response.docs.length - 1]
         }
@@ -77,6 +92,29 @@ export const getDocuments = async(tabla,limit) =>{
     return result;
 }
 
+export const getMoreDocuments = async(tabla,limit,start) =>{
+    const result = {statusResponse : true, error:null, data: [], startdata:null}
+    try {
+        const response = await db
+        .collection(tabla)
+        .orderBy("nombre",'asc')
+        .startAfter(start.data().nombre)
+        .limit(limit)
+        .get();
+        if(response.docs.length>0){
+            result.startdata = response.docs[response.docs.length - 1]
+        }
+        response.forEach((doc) =>{
+            const info = doc.data()
+            info.id = doc.id
+            result.data.push(info)
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
 
 export const uploadImage = async(image,path,name) => {
     const result = {statusResponse : false, url: null, error:null}

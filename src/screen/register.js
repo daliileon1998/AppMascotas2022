@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView,Dimensions } from 'react-native';
+import { Loading } from '../components/Loading';
 import { addCollectionUser, getCollection,createUser } from '../config/actions';
 
 export const Newregister = () =>{
 
   const modelo = {nombres:'',  apellidos:'',  correo:'',  contrasena:'',  tipoUsuario: 'User',  fechaCreacion: new Date()}
   const [newUser,setNewUser] = React.useState(modelo)
-
+  const [loading, setLoading] = React.useState(false)
+  const {height, width} = Dimensions.get('window');
 
   const onSend = async() =>{
     if(newUser.nombres ==""){
@@ -18,16 +20,20 @@ export const Newregister = () =>{
     }else if(newUser.contrasena == ""){
       alert("Debe ingresar la contraseña");
     }else{
-
+      setLoading(true);
       const result = await createUser(newUser)
       if(!result.statusResponse){
+        setLoading(false)
         alert("El usuario no se ha podido crear");
       }else{
         console.log(result.data);
         const result2 = await addCollectionUser(newUser,result.data.id)
+        console.log(result);
         if(!result2.statusResponse){
+          setLoading(false)
           alert("error");
         }else{
+          setLoading(false)
           alert("El usuario ha sido creado exitosamente");
         }
       }
@@ -45,6 +51,7 @@ export const Newregister = () =>{
         <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true} placeholder='Contraseña'></TextInput>
         <TouchableOpacity onPress={onSend} style={styles.button}><Text style={styles.textButton}>REGISTRARSE</Text></TouchableOpacity>
         </View>
+        <Loading isVisible={loading} text="    CARGANDO    " />
         </ScrollView>
         
     );

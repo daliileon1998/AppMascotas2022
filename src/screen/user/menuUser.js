@@ -2,10 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, Image } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import { DashboardAdmin } from "../admin/dashboardAdmin";
-import { Mascotas } from "../admin/mascotas/mascotas";
-import { Productos } from '../admin//productos/productos';
-import { SolicitudesAdopcion } from "../admin/solicitudes/solicitudesAdopcion";
+import { Dashboard } from "./dashboardUser";
 import { MenuBotton } from '../../components/MenuBotton';
 import { firebase } from '../../config/fb';
 import { useNavigation } from '@react-navigation/core';
@@ -29,7 +26,7 @@ export const DashboardUser = () =>{
   const handleSignOut = () => {
     firebase.auth().signOut()
       .then(() => {
-        navigation.replace("Home")
+        navigation.navigate("Home")
       })
       .catch(error => alert(error.message))
   }
@@ -39,12 +36,9 @@ export const DashboardUser = () =>{
     return (
       <DrawerContentScrollView style ={styles.container}>
         <Image style={styles.foto} source={require('../../../assets/user_register.png')}></Image>
-        <Text style={styles.nombre}>nombre usario</Text>
-          <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('Inicio')}/>
-          <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>
-          <MenuBotton image={imagesList['productos']} text="Productos" onPress = { () => navigation.navigate('Productos')}/>
-          <MenuBotton image={imagesList['solicitud']} text="Solicitudes de Adopción" onPress = { () => navigation.navigate('Solicitudes')}/>
-          <MenuBotton image={imagesList['logout']} text="Cerrar Sesión" onPress = {handleSignOut}/>
+        <Text style={styles.nombre}>nombre user</Text>
+          <MenuBotton image={imagesList['home']} text="InicioU" onPress = { () => navigation.navigate('Inicio')}/>
+          <MenuBotton image={imagesList['logout']} text="Cerrar SesiónU" onPress = {handleSignOut}/>
       </DrawerContentScrollView>
     );
 
@@ -55,15 +49,12 @@ export const DashboardUser = () =>{
       <NavigationContainer independent={true}>
         <Menu.Navigator drawerContent = { (props) => <MenuItems { ...props } />}>
         <Menu.Screen
-          name="Inicio"
+          name="InicioU"
           options={{
             headerTitle: "",
           }}
           component={DashboardUser}
         />
-         <Menu.Screen name="Mascotas" component={Mascotas} />
-         <Menu.Screen name="Productos" component={Productos} />
-         <Menu.Screen name="Solicitudes" component={SolicitudesAdopcion} />
         </Menu.Navigator>
       </NavigationContainer>
     );

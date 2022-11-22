@@ -3,24 +3,24 @@ import { ActivityIndicator,FlatList,StyleSheet,Text,View,TouchableOpacity} from 
 import { Image } from 'react-native-elements'
 import {size} from 'lodash'
 
-export default function ListProductos({ products, navigation}){
-    return(
+export default function ListProductos({ productos, navigation,handleLoadMore }) {
+  
+   return(
         <View>
             <FlatList
-                data={products}
-                keyExtractor={(item,index) => index.toString()}
-                renderItem={(product) =>{
-                    <Products product={product} navigation={navigation}/>
-                }}
-            
+                data={productos}
+                renderItem={Product}
+                onEndReachedThreshold={0.5}
+                onEndReached={handleLoadMore}
+                keyExtractor ={item => String(item.id) }
             />
         </View>
     )
 }
 
-function Products({product, navigation}){
-    const {id,images,codigo,nombre,cantidad,precio,descripcion} = product.item
-    const imageProduct = images[0]
+function Product({item})  {
+   // const {id,images,codigo,nombre,cantidad,precio,descripcion} = item
+    const imageProduct = item.foto[0]
 
     return(
         <TouchableOpacity>
@@ -34,21 +34,18 @@ function Products({product, navigation}){
                 />
                 </View>
                 <View>
-                <Text style={styles.productTitle}>{codigo}</Text>
-                <Text style={styles.productInformation}>{nombre}</Text>
-                <Text style={styles.productInformation}>{cantidad}</Text>
-                <Text style={styles.productInformation}>{precio}</Text>
-                <Text style={styles.productdescripcion}>{
-                    size(descripcion)>0
-                    ? `${descripcion.substr(0,60)}...`
-                    : descripcion
-                }</Text>
+                <Text style={styles.productTitle}>{item.codigo}</Text>
+                <Text style={styles.productInformation}>{item.nombre}</Text>
+                <Text style={styles.productInformation}>{item.cantidad}</Text>
+                <Text style={styles.productInformation}>{item.precio}</Text>
             </View>
             </View>
 
         </TouchableOpacity>
     )
 }
+
+
 
 const styles = StyleSheet.create({
     viewProduct:{
@@ -59,8 +56,8 @@ const styles = StyleSheet.create({
         marginRight:15
     },
     imageProduct:{
-        width:90,
-        height:90
+        width:100,
+        height:100
     },
     productTitle:{
         fontWeight:"bold"
