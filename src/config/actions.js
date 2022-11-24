@@ -1,3 +1,4 @@
+import { LogBox } from 'react-native';
 import { firebase } from './fb'
 
 const db = firebase.firestore();
@@ -16,7 +17,6 @@ export const isUserLogged = async() =>{
 
 export const getRol = async (id) =>{
     const response = await db.collection("usuarios/").doc(id).get()
-    //console.log("response --------->", response);
     return response.data().tipoUsuario;
 }
 
@@ -71,12 +71,8 @@ export const addDocument = async(tabla,data) =>{
 export const getDocuments = async(tabla,limit) =>{
     const result = {statusResponse : true, error:null, data: [], startdata:null}
     try {
-        const response = await db
-        .collection(tabla)
-        .orderBy("nombre",'asc')
-        .limit(limit)
-        .get();
-
+        //where("population", ">", 100000).orderBy("population").limit(2);
+        const response = await db.collection(tabla).where("estado","==", 1).orderBy("nombre").limit(limit).get()
         if(response.docs.length>0){
             result.startdata = response.docs[response.docs.length - 1]
         }
@@ -135,4 +131,43 @@ export const fileToBlob = async(path) =>{
     const file = await fetch(path)
     const blob = await file.blob()
     return blob;
+}
+
+export const getDocumentById = async(tabla,id) =>{
+    const result = {statusResponse : true, data: null, error:null}
+    try {
+       const response = await db.collection(tabla).doc(id).get()
+       result.data = response.data()
+       result.data.id = response.id
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+export const updateCollection = async(tabla, data,id) =>{
+    const result = {statusResponse : true, data: null, error:null}
+    try {
+       const response = await db.collection(tabla).doc(id).update(data)
+        console.log("response",response);
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+    //db.collection("users").doc(doc.id).update({foo: "bar"});
+}
+
+export const updateCollectionStatus = async(tabla, id) =>{
+    const result = {statusResponse : true, data: null, error:null}
+    try {
+       const response = await db.collection(tabla).doc(id).update({estado:0})
+        console.log("response",response);
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+    //db.collection("users").doc(doc.id).update({foo: "bar"});
 }

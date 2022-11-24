@@ -7,6 +7,7 @@ import { Mascotas } from "./mascotas/mascotas";
 import { Productos } from "./productos/productos";
 import { SolicitudesAdopcion } from "./solicitudes/solicitudesAdopcion";
 import { AddProduct } from './productos/addProducto';
+import  UpdateProduct from './productos/UpdateProducto';
 import { MenuBotton } from '../../components/MenuBotton';
 import { firebase } from '../../config/fb';
 import { useNavigation } from '@react-navigation/core';
@@ -15,9 +16,7 @@ import "react-native-gesture-handler";
 const Menu = createDrawerNavigator();
 
 
-export const Dashboard = () =>{
-
-  const navigation = useNavigation()
+export const Dashboard = ({navigation}) =>{
 
   const imagesList = {
     home: require('../../../assets/home.png'),
@@ -45,7 +44,7 @@ export const Dashboard = () =>{
           <MenuBotton image={imagesList['pets']} text="Mascotas" onPress = { () => navigation.navigate('Mascotas')}/>
           <MenuBotton image={imagesList['productos']} text="Productos" onPress = { () => navigation.navigate('Productos')}/>
           <MenuBotton image={imagesList['solicitud']} text="Solicitudes de Adopción" onPress = { () => navigation.navigate('Solicitudes')}/>
-          <MenuBotton image={imagesList['logout']} text="Cerrar Sesión" onPress = {handleSignOut}/>
+          <MenuBotton image={imagesList['logout']} text="Cerrar Sesión" onPress = {() =>handleSignOut()}/>
       </DrawerContentScrollView>
     );
 
@@ -65,9 +64,8 @@ export const Dashboard = () =>{
          <Menu.Screen name="Mascotas" component={Mascotas} />
          <Menu.Screen name="Productos" component={Productos} />
          <Menu.Screen name="Solicitudes" component={SolicitudesAdopcion} />
-         <Menu.Screen name="AddProducto" component={AddProduct} options={{
-            headerTitle: "",
-          }} />
+         <Menu.Screen name="AddProducto" component={AddProduct} options={{headerTitle: "",}} />
+         <Menu.Screen name="UpdateProducto" component={UpdateProduct} options={{headerTitle: "",}} />
         </Menu.Navigator>
       </NavigationContainer>
     );

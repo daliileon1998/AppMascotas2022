@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState,useEffect, useCallback} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native'
 import { getDocuments, getMoreDocuments } from '../../../config/actions';
@@ -9,12 +9,13 @@ import { Loading } from '../../../components/Loading';
 
 export const Productos = ({ navigation }) =>{
 
-  const [start, setStart] = React.useState(null)
-  const [products, setProducts] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
+  const [start, setStart] = useState(null)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
   const limit = 7
 
-    React.useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
       const fetchData = async () => {
         setLoading(true);
         const response = await getDocuments("productos", limit);
@@ -26,6 +27,7 @@ export const Productos = ({ navigation }) =>{
       }
       fetchData();
     }, [])
+  )
   
   const handleLoadMore = async() =>{
     if(!start){
@@ -47,7 +49,7 @@ export const Productos = ({ navigation }) =>{
             <ListProductos
               productos={products} 
               navigation={navigation}
-              handleLoadMore={handleLoadMore}/>
+              onEndReached={handleLoadMore}/>
           ) : (
             <View style={styles.notFoundView}>
               <Text style={styles.notFoundText}>No hay Productos registrados</Text>

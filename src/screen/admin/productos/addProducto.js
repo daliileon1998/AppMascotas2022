@@ -1,17 +1,15 @@
-import * as React from 'react';
+import React, {useState,useEffect} from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView } from 'react-native';
 import { addDocument, uploadImage } from '../../../config/actions';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'random-uuid-v4'
-import { useNavigation } from '@react-navigation/core';
 
 
-export const AddProduct = () =>{
+export const AddProduct = ({navigation}) =>{
 
-  const navigation = useNavigation()
   const modelo = {codigo:'',  nombre:'',  cantidad:0,  precio:0,  descripcion: 'User', estado:1, foto:'', fechaCreacion: new Date()}
-  const [newProduct,setnewProduct ] = React.useState(modelo);
-  const [image,setImage] = React.useState(null);
+  const [newProduct,setnewProduct ] = useState(modelo);
+  const [image,setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -21,9 +19,6 @@ export const AddProduct = () =>{
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -67,15 +62,15 @@ export const AddProduct = () =>{
     return (
         <ScrollView>
         <View style={styles.container}>
-        <Text style={styles.titulo}>INFORMACIÓN</Text>
-        {image && <Image source={{ uri: image }} style={{ width: 250, height: 250 }} />}
-        <TouchableOpacity onPress={pickImage} style={styles.button}><Text style={styles.textButton}>Seleccionar Imagen</Text></TouchableOpacity>
+        <Text style={styles.titulo}>Añadir Producto</Text>
+        {image && <Image source={{ uri: image }} style={{ width: 230, height: 230, marginTop:10 }} />}
+        <TouchableOpacity onPress={() =>pickImage()} style={styles.button}><Text style={styles.textButton}>Seleccionar Imagen</Text></TouchableOpacity>
         <TextInput onChangeText={(text) => setnewProduct({...newProduct, codigo:text})} style={styles.textInput} placeholder='Código'></TextInput>
         <TextInput onChangeText={(text) => setnewProduct({...newProduct, nombre:text})} style={styles.textInput} placeholder='Nombre'></TextInput>
         <TextInput onChangeText={(text) => setnewProduct({...newProduct, cantidad:text})} style={styles.textInput} placeholder='Cantidad' keyboardType='numeric'></TextInput>
         <TextInput onChangeText={(text) => setnewProduct({...newProduct, precio:text})} style={styles.textInput} placeholder='Precio' keyboardType='numeric'></TextInput>
         <TextInput onChangeText={(text) => setnewProduct({...newProduct, descripcion:text})} style={styles.textInput} placeholder='Descripción'></TextInput>
-        <TouchableOpacity onPress={onSend} style={styles.button}><Text style={styles.textButton}>GUARDAR</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() =>onSend()} style={styles.button}><Text style={styles.textButton}>GUARDAR</Text></TouchableOpacity>
         </View>
         </ScrollView>
         
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     titulo: {
-      fontSize: 40,
+      fontSize: 30,
       color: 'black',
       fontWeight: 'bold',
     },

@@ -5,15 +5,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Dashboard } from "./dashboardUser";
 import { MenuBotton } from '../../components/MenuBotton';
 import { firebase } from '../../config/fb';
-import { useNavigation } from '@react-navigation/core';
 import "react-native-gesture-handler";
 
 const Menu = createDrawerNavigator();
 
-
-export const DashboardUser = () =>{
-
-  const navigation = useNavigation()
+export const DashboardUser = ({navigation}) =>{
 
   const imagesList = {
     home: require('../../../assets/home.png'),

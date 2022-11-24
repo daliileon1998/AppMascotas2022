@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState,useEffect} from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView,Dimensions } from 'react-native';
 import { Loading } from '../components/Loading';
 import { addCollectionUser, getCollection,createUser } from '../config/actions';
@@ -6,8 +6,8 @@ import { addCollectionUser, getCollection,createUser } from '../config/actions';
 export const Newregister = () =>{
 
   const modelo = {nombres:'',  apellidos:'',  correo:'',  contrasena:'',  tipoUsuario: 'User',  fechaCreacion: new Date()}
-  const [newUser,setNewUser] = React.useState(modelo)
-  const [loading, setLoading] = React.useState(false)
+  const [newUser,setNewUser] = useState(modelo)
+  const [loading, setLoading] = useState(false)
   const {height, width} = Dimensions.get('window');
 
   const onSend = async() =>{
@@ -26,9 +26,7 @@ export const Newregister = () =>{
         setLoading(false)
         alert("El usuario no se ha podido crear");
       }else{
-        console.log(result.data);
         const result2 = await addCollectionUser(newUser,result.data.id)
-        console.log(result);
         if(!result2.statusResponse){
           setLoading(false)
           alert("error");
@@ -49,7 +47,7 @@ export const Newregister = () =>{
         <TextInput onChangeText={(text) => setNewUser({...newUser, apellidos:text})} style={styles.textInput} placeholder='Apellidos'></TextInput>
         <TextInput onChangeText={(text) => setNewUser({...newUser, correo:text})} style={styles.textInput} placeholder='Correo Electronico'></TextInput>
         <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true} placeholder='Contraseña'></TextInput>
-        <TouchableOpacity onPress={onSend} style={styles.button}><Text style={styles.textButton}>REGISTRARSE</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() =>onSend()} style={styles.button}><Text style={styles.textButton}>REGISTRARSE</Text></TouchableOpacity>
         </View>
         <Loading isVisible={loading} text="    CARGANDO    " />
         </ScrollView>

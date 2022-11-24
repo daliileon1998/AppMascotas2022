@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
 import { firebase } from '../config/fb';
@@ -7,15 +7,15 @@ import { Loading } from '../components/Loading';
 
 const {height, width} = Dimensions.get('window');
 
-export const LoginScreen = ({navigation}) => {
+export default function LoginScreen ({navigation}) {
 
   const modelo = {correo:'',  contrasena:''}
-  const [newUser,setNewUser] = React.useState(modelo);
-  const [rol, setRol] = React.useState('user');
-  const [login, setLogin] = React.useState(null);
-  const [loading, setLoading] = React.useState(false)
+  const [newUser,setNewUser] = useState(modelo);
+  const [rol, setRol] = useState('user');
+  const [login, setLogin] = useState(null);
+  const [loading, setLoading] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       //setLoading(true);
       const response = await isUserLogged();
@@ -35,7 +35,9 @@ export const LoginScreen = ({navigation}) => {
       alert("Debe ingresar la contraseña");
     }else{
       setLoading(true)
-      firebase.auth().signInWithEmailAndPassword(newUser.correo,newUser.contrasena).
+      navigation.navigate("DashboardAdmin")
+      setLoading(false)
+      /*await firebase.auth().signInWithEmailAndPassword(newUser.correo,newUser.contrasena).
       then( async(userCredentials) => {
         const user = userCredentials.user;
         const id = user.uid;
@@ -43,17 +45,17 @@ export const LoginScreen = ({navigation}) => {
         setLogin(true);
         setRol(tiprol)
         if(rol == "Admin"){
-          navigation.replace("DashboardAdmin")
+          navigation.navigate("DashboardAdmin")
         }else if(rol == "User"){
-          navigation.replace("DashboardU")
+          navigation.navigate("DashboardU")
         }
         setLoading(false)
-      }).catch(error => alert(error.message))
+      }).catch(error => alert(error.message))*/
     }  
   }
 
   if(login == null){
-    return (
+  return (
       <View style={styles.container}>
         <View style={styles.panel}>
         <Image style={styles.foto} source={require('../../assets/perrito.png')}></Image>
@@ -64,17 +66,17 @@ export const LoginScreen = ({navigation}) => {
         <TextInput onChangeText={(text) => setNewUser({...newUser, correo:text})} style={styles.textInput} placeholder='nombre de usuario'></TextInput>
         <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true}  placeholder='Contraseña'></TextInput>
         <Text style={styles.forgotPassword} >¿Perdiste Tu Contraseña?</Text>
-        <TouchableOpacity onPress={onLogin} style={styles.button}><Text style={styles.textButton}>INICIAR SESIÓN</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => onLogin()} style={styles.button}><Text style={styles.textButton}>INICIAR SESIÓN</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Registro')}><Text style={styles.forgotPassword}>¿No Tienes Una Cuenta? Registrate</Text></TouchableOpacity>
         <StatusBar style="auto" />
         <Loading isVisible={loading} text="    CARGANDO    " />
       </View>
-    );
+    )
   }else{
     if(rol == "Admin"){
-      navigation.replace("DashboardAdmin")
+      navigation.navigate("DashboardAdmin")
     }else if(rol == "User"){
-      navigation.replace("DashboardU")
+      navigation.navigate("DashboardU")
     }
   }
 }
