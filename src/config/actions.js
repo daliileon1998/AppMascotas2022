@@ -15,6 +15,29 @@ export const isUserLogged = async() =>{
     return result;
 }
 
+export const loginWithEmailAndPassword = async(email, password) => {
+    const result = { statusResponse: true, error: null, id:null, rol:null}
+    try {
+        await firebase.auth().signInWithEmailAndPassword(email, password).
+        then( async(userCredentials) => {
+          const user = userCredentials.user;
+          const id = user.uid;
+          const tiprol = await getRol(id);
+          result.id = id;
+          result.rol = tiprol;
+        }).catch(error => result.statusResponse = false)
+
+    } catch (error) {
+        result.statusResponse = false
+        result.error = "Usuario o contraseña no válidos."
+    }
+    return result
+}
+
+export const getCurrentUser = () => {
+    return firebase.auth().currentUser.uid
+}
+
 export const getRol = async (id) =>{
     const response = await db.collection("usuarios/").doc(id).get()
     return response.data().tipoUsuario;
@@ -71,7 +94,6 @@ export const addDocument = async(tabla,data) =>{
 export const getDocuments = async(tabla,limit) =>{
     const result = {statusResponse : true, error:null, data: [], startdata:null}
     try {
-        //where("population", ">", 100000).orderBy("population").limit(2);
         const response = await db.collection(tabla).where("estado","==", 1).orderBy("nombre").limit(limit).get()
         if(response.docs.length>0){
             result.startdata = response.docs[response.docs.length - 1]
@@ -80,6 +102,39 @@ export const getDocuments = async(tabla,limit) =>{
             const info = doc.data()
             info.id = doc.id
             result.data.push(info)
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+export const getCollectionCombo = async(tabla)=>{
+    const result = {statusResponse : true, data: [], error:null}
+    try {
+        const response = await db.collection(tabla).get() 
+        response.forEach((doc) =>{
+            const info = doc.data()
+            info.id = doc.id
+            result.data.push({label:info.nombre, value:info.id})
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+export const getCollectionComboDependiente = async(tabla, data)=>{
+    const result = {statusResponse : true, data: [], error:null}
+    try {
+        const response = await db.collection(tabla).where("categoria.nombreCategoria","==", data).orderBy("nombre").get()
+        console.log("response ----------->",response);
+        response.forEach((doc) =>{
+            const info = doc.data()
+            info.id = doc.id
+            result.data.push({label:info.nombre, value:info.id})
         })
     } catch (error) {
         result.error = error;
@@ -150,7 +205,6 @@ export const updateCollection = async(tabla, data,id) =>{
     const result = {statusResponse : true, data: null, error:null}
     try {
        const response = await db.collection(tabla).doc(id).update(data)
-        console.log("response",response);
     } catch (error) {
         result.error = error;
         result.statusResponse=false;
@@ -163,7 +217,6 @@ export const updateCollectionStatus = async(tabla, id) =>{
     const result = {statusResponse : true, data: null, error:null}
     try {
        const response = await db.collection(tabla).doc(id).update({estado:0})
-        console.log("response",response);
     } catch (error) {
         result.error = error;
         result.statusResponse=false;

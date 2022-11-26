@@ -4,10 +4,10 @@ import { StyleSheet, View, ScrollView,Text } from 'react-native';
 import { Icon } from 'react-native-elements';
 import {size} from 'lodash'
 import { Loading } from '../../../components/Loading';
-import { getDocuments } from '../../../config/actions';
-import ListMascotas from './listaMasotas';
+import { getDocuments, getMoreDocuments } from '../../../config/actions';
+import ListAdopcion from './listaAdopcion';
 
-export const Mascotas = ({ navigation }) =>{
+export const Adopcion = ({ navigation }) =>{
 
   const [start, setStart] = useState(null)
   const [mascotas, setMascotas] = useState([])
@@ -48,7 +48,7 @@ export const Mascotas = ({ navigation }) =>{
       <View style={styles.container}>
       {
         size(mascotas) > 0 ? (
-          <ListMascotas
+          <ListAdopcion
               productos={mascotas} 
               navigation={navigation}
               onEndReached={handleLoadMore}/>
@@ -58,13 +58,6 @@ export const Mascotas = ({ navigation }) =>{
           </View>
         )
       }
-      <Icon 
-      type="material-community"
-      name="plus"
-      color="#6495ed"
-      reverse
-      containerStyle={styles.btnContainerM}
-      onPress = { () => navigation.navigate('AddMascotas')}/>
       <Loading isVisible={loading} text="    CARGANDO    " />
       </View> 
     );

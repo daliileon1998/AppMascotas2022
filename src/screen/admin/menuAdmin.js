@@ -3,14 +3,19 @@ import { StyleSheet, Text, Image } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { DashboardAdmin } from "./dashboardAdmin";
-import { Mascotas } from "./mascotas/mascotas";
-import { Productos } from "./productos/productos";
+
 import { SolicitudesAdopcion } from "./solicitudes/solicitudesAdopcion";
+
+import { Productos } from "./productos/productos";
 import { AddProduct } from './productos/addProducto';
 import  UpdateProduct from './productos/UpdateProducto';
+
+import { Mascotas } from "./mascotas/mascotas";
+import { AddMascotas } from './mascotas/addMascotas';
+import  UpdateMascota  from './mascotas/UpdateMascotas';
+
 import { MenuBotton } from '../../components/MenuBotton';
 import { firebase } from '../../config/fb';
-import { useNavigation } from '@react-navigation/core';
 import "react-native-gesture-handler";
 
 const Menu = createDrawerNavigator();
@@ -66,10 +71,12 @@ export const Dashboard = ({navigation}) =>{
          <Menu.Screen name="Solicitudes" component={SolicitudesAdopcion} />
          <Menu.Screen name="AddProducto" component={AddProduct} options={{headerTitle: "",}} />
          <Menu.Screen name="UpdateProducto" component={UpdateProduct} options={{headerTitle: "",}} />
+         <Menu.Screen name="AddMascotas" component={AddMascotas} options={{headerTitle: "",}} />
+         <Menu.Screen name="UpdateMascota" component={UpdateMascota} options={{headerTitle: "",}} />
         </Menu.Navigator>
       </NavigationContainer>
     );
-  }
+  }//
 
   const styles = StyleSheet.create({
       container:{

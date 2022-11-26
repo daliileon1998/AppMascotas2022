@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView } from 'react-native';
 
-export const DashboardAdmin = () =>{
+export const DashboardU = () =>{
     return (
         <ScrollView>
         <View style={styles.container}>

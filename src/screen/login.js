@@ -1,9 +1,9 @@
 import React, {useState,useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
-import { firebase } from '../config/fb';
-import { getRol, isUserLogged } from '../config/actions';
+import { isUserLogged, loginWithEmailAndPassword } from '../config/actions';
 import { Loading } from '../components/Loading';
+import { Ionicons} from '@expo/vector-icons'
 
 const {height, width} = Dimensions.get('window');
 
@@ -26,7 +26,8 @@ export default function LoginScreen ({navigation}) {
       }
     }
     fetchData();
-  }, [])
+  }, [rol,login])
+
 
   const onLogin = async() =>{
     if(newUser.correo == ""){
@@ -35,27 +36,34 @@ export default function LoginScreen ({navigation}) {
       alert("Debe ingresar la contraseña");
     }else{
       setLoading(true)
-      navigation.navigate("DashboardAdmin")
-      setLoading(false)
-      /*await firebase.auth().signInWithEmailAndPassword(newUser.correo,newUser.contrasena).
-      then( async(userCredentials) => {
-        const user = userCredentials.user;
-        const id = user.uid;
-        const tiprol = await getRol(id);
+      setLoading(true)
+      const result = await loginWithEmailAndPassword(newUser.correo,newUser.contrasena)
+      if (!result.statusResponse) {
+          setErrorEmail(result.error)
+          setErrorPassword(result.error)
+          setLoading(false)
+          return
+      }else{
         setLogin(true);
-        setRol(tiprol)
+        setRol(result.rol)
+        setLoading(false)
         if(rol == "Admin"){
           navigation.navigate("DashboardAdmin")
         }else if(rol == "User"){
           navigation.navigate("DashboardU")
         }
-        setLoading(false)
-      }).catch(error => alert(error.message))*/
+      }
     }  
   }
 
-  if(login == null){
-  return (
+  if(login){
+    if(rol == "Admin"){
+      navigation.navigate("DashboardAdmin")
+    }else if(rol == "User"){
+      navigation.navigate("DashboardU")
+    }
+  }else{
+    return (
       <View style={styles.container}>
         <View style={styles.panel}>
         <Image style={styles.foto} source={require('../../assets/perrito.png')}></Image>
@@ -64,7 +72,7 @@ export default function LoginScreen ({navigation}) {
         <Text style={styles.titulo}>App Mascotas</Text>
         <Text style={styles.subTitulo}>Inicia Sesión en tu Cuenta</Text>
         <TextInput onChangeText={(text) => setNewUser({...newUser, correo:text})} style={styles.textInput} placeholder='nombre de usuario'></TextInput>
-        <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true}  placeholder='Contraseña'></TextInput>
+        <TextInput onChangeText={(text) => setNewUser({...newUser, contrasena:text})} style={styles.textInput} secureTextEntry={true}  placeholder='Contraseña'></TextInput>   
         <Text style={styles.forgotPassword} >¿Perdiste Tu Contraseña?</Text>
         <TouchableOpacity onPress={() => onLogin()} style={styles.button}><Text style={styles.textButton}>INICIAR SESIÓN</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Registro')}><Text style={styles.forgotPassword}>¿No Tienes Una Cuenta? Registrate</Text></TouchableOpacity>
@@ -72,13 +80,9 @@ export default function LoginScreen ({navigation}) {
         <Loading isVisible={loading} text="    CARGANDO    " />
       </View>
     )
-  }else{
-    if(rol == "Admin"){
-      navigation.navigate("DashboardAdmin")
-    }else if(rol == "User"){
-      navigation.navigate("DashboardU")
-    }
   }
+
+
 }
 
 const styles = StyleSheet.create({
@@ -139,5 +143,4 @@ const styles = StyleSheet.create({
   textButton: {
     fontWeight: "bold"
   }
-
 });

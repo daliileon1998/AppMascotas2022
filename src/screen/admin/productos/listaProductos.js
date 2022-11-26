@@ -1,6 +1,8 @@
 import React from 'react'
-import { ActivityIndicator,FlatList,StyleSheet,Text,View} from 'react-native'
+import { ActivityIndicator,Dimensions,FlatList,StyleSheet,Text,View} from 'react-native'
 import { Image, ListItem } from 'react-native-elements'
+
+const {height, width} = Dimensions.get('window');
 
 export default function ListProductos({ productos, navigation,handleLoadMore }) {
 
@@ -27,6 +29,8 @@ export default function ListProductos({ productos, navigation,handleLoadMore }) 
                     <View>
                     <Text style={styles.productTitle}>Código : {item.codigo}</Text>
                     <Text style={styles.productInformation}>Nombre : {item.nombre}</Text>
+                    <Text style={styles.productInformation}>Categoria : {item.categoria.categoriaName}</Text>
+                    <Text style={styles.productInformation}>SubCategoria : {item.subcategoria.subcategoriaName}</Text>
                     <Text style={styles.productInformation}>Cantidad : {item.cantidad}</Text>
                     <Text style={styles.productInformation}>Precio : {item.precio}</Text>
                 </View>
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
     },
     imageProduct:{
         width:100,
-        height:100,
+        height:130,
     },
     productTitle:{
         fontWeight:"bold"
