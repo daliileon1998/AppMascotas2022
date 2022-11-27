@@ -16,7 +16,7 @@ export const isUserLogged = async() =>{
 }
 
 export const loginWithEmailAndPassword = async(email, password) => {
-    const result = { statusResponse: true, error: null, id:null, rol:null}
+    const result = { statusResponse: false, error: null, id:null, rol:null}
     try {
         await firebase.auth().signInWithEmailAndPassword(email, password).
         then( async(userCredentials) => {
@@ -25,7 +25,8 @@ export const loginWithEmailAndPassword = async(email, password) => {
           const tiprol = await getRol(id);
           result.id = id;
           result.rol = tiprol;
-        }).catch(error => result.statusResponse = false)
+          result.statusResponse = true
+        }).catch(error => result.error = error.message )
 
     } catch (error) {
         result.statusResponse = false
@@ -224,3 +225,36 @@ export const updateCollectionStatus = async(tabla, id) =>{
     return result;
     //db.collection("users").doc(doc.id).update({foo: "bar"});
 }
+
+/*export const getDocumentsSolicitud = async(tabla) =>{
+    const result = {statusResponse : true, error:null, data: [], startdata:null}
+    const orderData = [];
+    try {
+        const response = await db.collection(tabla).where("estado","==", 1).orderBy("fechaSolicitud").get()
+        response.forEach((doc) =>{
+            const info = doc.data()
+            result.data.push(info)
+        })
+
+        /*response.forEach(doc => orderData.push(doc.data().mascota.mascotaId))
+        console.log("orderData ----------->",orderData);
+        let grouped = mapValues(groupBy(orderData, 'orderDate'),
+        clist => clist.map(car => omit(car, 'orderDate'))
+        );
+        console.log(grouped);*/
+
+    /*    orders.forEach(order => orderData.push(order.data()))
+    let grouped = mapValues(groupBy(orderData, 'orderDate'),
+        clist => clist.map(car => omit(car, 'orderDate'))
+    );
+    console.log(grouped);*/
+
+
+       /* const response2 = await db.collection("mascotas").where("id","in", id).orderBy("nombre").get()
+        console.log("response 2 ------------->", response2);*/
+   /* } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}*/

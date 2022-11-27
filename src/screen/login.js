@@ -14,6 +14,8 @@ export default function LoginScreen ({navigation}) {
   const [rol, setRol] = useState('user');
   const [login, setLogin] = useState(null);
   const [loading, setLoading] = useState(false)
+  const [errorEmail, setErrorEmail] = useState("")
+  const [errorPassword, setErrorPassword] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +41,9 @@ export default function LoginScreen ({navigation}) {
       setLoading(true)
       const result = await loginWithEmailAndPassword(newUser.correo,newUser.contrasena)
       if (!result.statusResponse) {
-          setErrorEmail(result.error)
-          setErrorPassword(result.error)
+        alert(result.error)
+          /*setErrorEmail(result.error)
+          setErrorPassword(result.error)*/
           setLoading(false)
           return
       }else{

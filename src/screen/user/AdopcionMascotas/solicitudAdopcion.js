@@ -1,8 +1,8 @@
-import { useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import { StyleSheet,Text,View, TextInput,TouchableOpacity,ScrollView, Switch, Dimensions} from 'react-native'
 import { addDocument, getDocumentById } from '../../../config/actions'
-import {Dropdown} from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 import { Loading } from '../../../components/Loading';
 
 const {width,height} = Dimensions.get("window")
@@ -54,7 +54,6 @@ const estadoCivil =[
   useFocusEffect(
     useCallback(() => {
     const fetchData = async () => {
-    setLoading(true)
     const responseData = await getDocumentById("usuarios",route.params.idUser)
     if(responseData.statusResponse){
         setUser({...responseData.data})
@@ -71,7 +70,6 @@ const estadoCivil =[
         setmascota({})
         Alert.alert("Ocurrió un problema cargando la información, intente más tarde");
       }
-    setLoading(false)
     }
     fetchData();
 }, [route.params])
@@ -260,7 +258,7 @@ if(!usuario){
            value={isEnable3} />
            <TouchableOpacity onPress={()=> GuardarSolicitud()} style={styles.button}><Text style={styles.textButton}>REGISTRAR SOLICITUD</Text></TouchableOpacity>
            </View>
-           return <Loading isVisible={true} text="    CARGANDO    " />
+           <Loading isVisible={false} text="    CARGANDO    " />
         </ScrollView>
     )
 }
