@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Dimensions, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
 import { isUserLogged, loginWithEmailAndPassword } from '../config/actions';
 import { Loading } from '../components/Loading';
-import { Ionicons} from '@expo/vector-icons'
 
 const {height, width} = Dimensions.get('window');
 

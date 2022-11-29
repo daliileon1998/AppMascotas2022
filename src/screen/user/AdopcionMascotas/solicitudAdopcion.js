@@ -63,7 +63,7 @@ const estadoCivil =[
         newSolicitud.usuarioAdopcion = {userId: route.params.idUser, userName: responseData.data.nombres }
         const responseDataM = await getDocumentById("mascotas",route.params.idMascota)
         if(responseDataM.statusResponse){
-            newSolicitud.mascota = {mascotaId: route.params.idMascota, mascotaName: responseDataM.data.nombre }
+            newSolicitud.mascota = {mascotaId: route.params.idMascota, mascotaName: responseDataM.data.nombre, mascotafoto: responseDataM.data.imagenes[0] }
         }
     }else{
         setUser({})

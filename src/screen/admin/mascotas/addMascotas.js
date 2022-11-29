@@ -13,7 +13,7 @@ const widthScreen = Dimensions.get("window").width
 
 export const AddMascotas = ({navigation}) =>{
 
-  const modelo = {nombre:'',  edad:0, raza:[], descripcion:'', tamaño:'',  peso: 0, estado:1, imagenes:'', fechaCreacion: new Date()}
+  const modelo = {nombre:'', genero:'',  edad:0, raza:[], descripcion:'', tamaño:'',  peso: 0, estado:1, imagenes:'', fechaCreacion: new Date()}
   const [newMascota,setnewMascota ] = useState(modelo);
   const [image,setImage] = useState(null);
   const [imageSelected, setImageSelected] = useState([])
@@ -21,6 +21,7 @@ export const AddMascotas = ({navigation}) =>{
   const [isFocus, setIsFocus] = useState(false);
   const [raza, setraza] = useState([]);
   const [razaId, setrazaId] = useState(null);
+  const [generoId, setgeneroId] = useState(null);
   const [tamanioMa, settamanioMa] = useState(null);
 
   useEffect(() => {
@@ -36,6 +37,11 @@ export const AddMascotas = ({navigation}) =>{
     { label:"Grande", value:1},
     { label:"Mediano", value:2},
     { label:"Pequeño", value:3}
+  ]
+
+  const genero =[
+    { label:"Hembra", value:1},
+    { label:"Macho", value:2}
   ]
   
   function UploadImageMascota({ imageSelected, setImageSelected}){
@@ -132,6 +138,8 @@ export const AddMascotas = ({navigation}) =>{
   const onSendMascotas = async() =>{
     if(newMascota.nombre ==""){
       alert("Debe ingresar el nombre de la mascota");
+    }else if(newMascota.genero == ""){
+      alert("Debe ingresar el genero de la mascota");
     }else if(newMascota.edad == ""){
       alert("Debe ingresar la edad de la mascota");
     }else if(newMascota.raza.length == 0){
@@ -166,6 +174,28 @@ export const AddMascotas = ({navigation}) =>{
         <Text style={styles.titulo}>Añadir Mascota</Text>
         <ImageMascota imagePet={imageSelected[0]}/>
         <TextInput onChangeText={(text) => setnewMascota({...newMascota, nombre:text})} style={styles.textInput} placeholder='Nombre'></TextInput>
+        <Dropdown
+          style={[styles.textInput]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={genero}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Seleccione El genero' : '...'}
+          searchPlaceholder="Search..."
+          value={generoId}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            newMascota.genero = item.value
+            setgeneroId(item.value)
+           //setIsFocus(false);
+          }}
+        />
         <TextInput onChangeText={(text) => setnewMascota({...newMascota, edad:text})} style={styles.textInput} placeholder='Edad' keyboardType='numeric'></TextInput>
         <Dropdown
           style={[styles.textInput]}
@@ -185,7 +215,7 @@ export const AddMascotas = ({navigation}) =>{
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             newMascota.raza = {razaId: item.value, razaName: item.label}
-            setIsFocus(false);
+           //setIsFocus(false);
           }}
         />
         <Dropdown
@@ -206,6 +236,7 @@ export const AddMascotas = ({navigation}) =>{
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             newMascota.tamaño =item.value
+            settamanioMa(item.value)
           }}
         />
         <TextInput onChangeText={(text) => setnewMascota({...newMascota, peso:text})} style={styles.textInput} placeholder='Peso' keyboardType='numeric'></TextInput>

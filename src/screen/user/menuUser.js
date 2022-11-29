@@ -6,6 +6,7 @@ import { DashboardU } from "./dashboardUser";
 import { MenuBotton } from '../../components/MenuBotton';
 import { firebase } from '../../config/fb';
 import { Adopcion } from "./AdopcionMascotas/adopcion";
+import { MisSolicitudes } from "./misSolicitudes/misSolicitudes";
 import  InfoMascota  from "./AdopcionMascotas/infoMascota";
 import  SolicitudApcion  from "./AdopcionMascotas/solicitudAdopcion";
 import "react-native-gesture-handler";
@@ -38,6 +39,7 @@ export const DashboardUser = ({navigation}) =>{
         <Text style={styles.nombre}>nombre user</Text>
           <MenuBotton image={imagesList['home']} text="Inicio" onPress = { () => navigation.navigate('InicioU')}/>
           <MenuBotton image={imagesList['pets']} text="Adopción de Mascotas" onPress = { () => navigation.navigate('Adopcion')}/>
+          <MenuBotton image={imagesList['solicitud']} text="Mis Solicitudes" onPress = { () => navigation.navigate('MisSolicitudes')}/>
           <MenuBotton image={imagesList['logout']} text="Cerrar Sesión" onPress = {handleSignOut}/>
       </DrawerContentScrollView>
     );
@@ -58,6 +60,7 @@ export const DashboardUser = ({navigation}) =>{
         <Menu.Screen name="Adopcion" component={Adopcion} />
         <Menu.Screen name="infoMascota" component={InfoMascota} options={{headerTitle: "",}}/>
         <Menu.Screen name="solicitudAdop" component={SolicitudApcion} options={{headerTitle: "",}}/>
+        <Menu.Screen name="MisSolicitudes" component={MisSolicitudes} options={{headerTitle: "",}}/>
         </Menu.Navigator>
       </NavigationContainer>
     );

@@ -111,6 +111,51 @@ export const getDocuments = async(tabla,limit) =>{
     return result;
 }
 
+export const getDocumentsS = async(tabla,limit) =>{
+    const result = {statusResponse : true, error:null, data: [], startdata:null}
+    try {
+        firebase.auth().onAuthStateChanged(async(user) =>{
+            const response = await db.collection(tabla).where("usuarioAdopcion.userId","==", user.uid).orderBy("fechaSolicitud").limit(limit).get()
+            if(response.docs.length>0){
+                result.startdata = response.docs[response.docs.length - 1]
+            }
+            response.forEach((doc) =>{
+                const info = doc.data()
+                info.id = doc.id
+                result.data.push(info)
+            })
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
+export const getMoreDocumentsS = async(tabla,limit,start) =>{
+    const result = {statusResponse : true, error:null, data: [], startdata:null}
+    try {
+        const response = await db
+        .collection(tabla)
+        .orderBy("fechaSolicitud",'asc')
+        .startAfter(start.data().nombre)
+        .limit(limit)
+        .get();
+        if(response.docs.length>0){
+            result.startdata = response.docs[response.docs.length - 1]
+        }
+        response.forEach((doc) =>{
+            const info = doc.data()
+            info.id = doc.id
+            result.data.push(info)
+        })
+    } catch (error) {
+        result.error = error;
+        result.statusResponse=false;
+    }
+    return result;
+}
+
 export const getCollectionCombo = async(tabla)=>{
     const result = {statusResponse : true, data: [], error:null}
     try {
@@ -131,7 +176,6 @@ export const getCollectionComboDependiente = async(tabla, data)=>{
     const result = {statusResponse : true, data: [], error:null}
     try {
         const response = await db.collection(tabla).where("categoria.nombreCategoria","==", data).orderBy("nombre").get()
-        console.log("response ----------->",response);
         response.forEach((doc) =>{
             const info = doc.data()
             info.id = doc.id

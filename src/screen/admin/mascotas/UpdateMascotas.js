@@ -22,11 +22,17 @@ export default function UpdateMascota  ({ navigation, route}) {
   const [raza, setraza] = useState([]);
   const [razaId, setrazaId] = useState(null);
   const [tamanioMa, settamanioMa] = useState(null);
+  const [genero, setgenero] = useState([]);
+  const [generoId, setgeneroId] = useState(null);
 
   const TamanioMascota =[
     { label:"Grande", value:1},
     { label:"Mediano", value:2},
     { label:"Pequeño", value:3}
+  ]
+  const generoM =[
+    { label:"Hembra", value:1},
+    { label:"Macho", value:2}
   ]
 
   useFocusEffect(
@@ -146,7 +152,7 @@ export default function UpdateMascota  ({ navigation, route}) {
     if(!responseProduct.statusResponse){
       alert("Error, no se ha eliminar la mascota")
     }else{
-      alert("La mascota se ha eliminado el producto exitosamente")
+      alert("La mascota se ha eliminado la mascota exitosamente")
       navigation.navigate('Mascotas')
     }
   }
@@ -195,6 +201,27 @@ export default function UpdateMascota  ({ navigation, route}) {
         <Text style={styles.titulo}>Editar Mascota</Text>
         <ImageMascota imagePet={imageSelected[0]}/>
         <TextInput onChangeText={(text) => setMascotaE({...mascota, nombre:text})} style={styles.textInput} placeholder='Nombre' value={mascota.nombre}></TextInput>
+        <Dropdown
+          style={[styles.textInput]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={genero}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Seleccione el género de la mascota' : '...'}
+          searchPlaceholder="Buscando..."
+          value={generoId}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            mascota.genero = item.value
+            setIsFocus(false);
+          }}
+        />
         <TextInput onChangeText={(text) => setMascotaE({...mascota, edad:text})} style={styles.textInput} placeholder='Edad' keyboardType='numeric' value={mascota.edad}></TextInput>
         <Dropdown
           style={[styles.textInput]}

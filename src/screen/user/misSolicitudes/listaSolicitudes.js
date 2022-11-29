@@ -2,30 +2,27 @@ import React from 'react'
 import { ActivityIndicator,FlatList,StyleSheet,Text,View} from 'react-native'
 import { Image, ListItem } from 'react-native-elements'
 
-export default function ListAdopcion({ productos, navigation,handleLoadMore }) {
+export default function ListSolicitudes({ solicitudes, navigation }) {
 
-    function Mascota({item, handleLoadMore})  {
+    const Estado = [
+        { label : "Activo",  value:"1"},
+        { label : "Rechazado",  value:"2"},
+        { label : "Aprobado",  value:"3"}
+    ]
 
+    function SolicitudesU({item})  {
+
+        console.log("item -------------->",item);
         const {id,images,nombre,edad,raza,tamaño,descripcion,peso} = item
-        const imageMascota = item.imagenes[0];
-
-        const TamanioMascota =[
-            { label:"Grande", value:1},
-            { label:"Mediano", value:2},
-            { label:"Pequeño", value:3}
-          ]
-
-        const genero =[
-            { label:"Hembra", value:1},
-            { label:"Macho", value:2}
-          ]
-    
-        const goDetailsMascota = () =>{
-            navigation.navigate("infoMascota", { id, nombre})
+        const imageMascota = item.mascota.mascotafoto;
+        console.log("imageMascota ------------>",imageMascota);
+   
+        const goDetailsSolicitud = () =>{
+            //navigation.navigate("infoMascota", { id, nombre})
         }
     
         return(
-            <ListItem onPress={goDetailsMascota}>
+            <ListItem onPress={goDetailsSolicitud}>
                 <View style={styles.viewMascota}>                   
                 <View style={styles.viewImageMascota}>
                     <Image
@@ -36,11 +33,8 @@ export default function ListAdopcion({ productos, navigation,handleLoadMore }) {
                     />
                     </View>
                     <View>
-                    <Text style={styles.MascotaTitle}>Nombre : {item.nombre}</Text>
-                    <Text style={styles.MascotaInformation}>Género : {genero[item.genero - 1]["label"]}</Text>
-                    <Text style={styles.MascotaInformation}>Edad : {item.edad}</Text>
-                    <Text style={styles.MascotaInformation}>Raza : {item.raza.razaName}</Text>
-                    <Text style={styles.MascotaInformation}>Tamaño : {TamanioMascota[item.tamaño - 1]["label"]}</Text>
+                    <Text style={styles.MascotaInformation}>Nombre Mascota : {item.mascota.mascotaName}</Text>
+                    <Text style={styles.MascotaInformation}>Estado : {Estado[item.estado - 1]["label"]}</Text>
                 </View>
                 </View>
             </ListItem>
@@ -50,10 +44,9 @@ export default function ListAdopcion({ productos, navigation,handleLoadMore }) {
     return(
         <View>
             <FlatList
-                data={productos}
-                renderItem={Mascota}
+                data={solicitudes}
+                renderItem={SolicitudesU}
                 onEndReachedThreshold={0.5}
-                onEndReached={handleLoadMore}
                 keyExtractor ={item => String(item.id) }
             />
         </View>

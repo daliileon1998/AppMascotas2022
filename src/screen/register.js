@@ -1,7 +1,7 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View,Image,TextInput,TouchableOpacity, ScrollView,Dimensions } from 'react-native';
 import { Loading } from '../components/Loading';
-import { addCollectionUser, getCollection,createUser } from '../config/actions';
+import { addCollectionUser,createUser } from '../config/actions';
 
 export const Newregister = () =>{
 
